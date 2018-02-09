@@ -40,6 +40,7 @@ $bobot[]=array(1,'Sangat Tinggi');
 
 $q=mysqli_query($koneksi, "select * from kriteria");
 $no=0;
+$daftar_kriteria = "";
 while($h=mysqli_fetch_array($q)){
 	$no++;
 	$list_bobot='';
