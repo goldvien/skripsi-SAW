@@ -11,36 +11,36 @@ if(!empty($_POST['cmd_simpan'])){
 	}else{
 		if($_POST['txt_action']=='new'){
 			$q="insert into himpunan(id_kriteria, nama, nilai) values('".$_POST['txt_id2']."', '".$_POST['txt_nama']."', '".$_POST['txt_nilai']."')";
-			mysql_query($q);
+			mysqli_query($koneksi, $q);
 			$id2=$_POST['txt_id2'];
 		}
 		if($_POST['txt_action']=='edit'){
 			$q="update himpunan set nama='".$_POST['txt_nama']."',nilai='".$_POST['txt_nilai']."' where id_himpunan='".$_POST['txt_id']."'";
-			mysql_query($q);
+			mysqli_query($koneksi, $q);
 			$id2=$_POST['txt_id2'];
 		}
 		exit("<script>location.href='?hal=data_himpunan&kriteria=".$id2."';</script>");
 	}
 }
 $id2=$_GET['id2'];
-$q=mysql_query("select * from kriteria where id_kriteria='".$id2."'");
-if(mysql_num_rows($q)>0){
-	$h=mysql_fetch_array($q);
+$q=mysqli_query($koneksi, "select * from kriteria where id_kriteria='".$id2."'");
+if(mysqli_num_rows($q)>0){
+	$h=mysqli_fetch_array($q);
 	$kriteria=$h['nama'];
 }
 
 $action=$_GET['action'];
 if($_GET['action']=='edit' and !empty($_GET['id'])){
 	$id=$_GET['id'];
-	$q=mysql_query("select * from himpunan where id_himpunan='".$id."'");
-	if(mysql_num_rows($q)>0){
-		$h=mysql_fetch_array($q);
+	$q=mysqli_query($koneksi, "select * from himpunan where id_himpunan='".$id."'");
+	if(mysqli_num_rows($q)>0){
+		$h=mysqli_fetch_array($q);
 		$nama=$h['nama'];
 		$nilai=$h['nilai'];
 		$id2=$h['id_kriteria'];
-		$q=mysql_query("select * from kriteria where id_kriteria='".$h['id_kriteria']."'");
-		if(mysql_num_rows($q)>0){
-			$h=mysql_fetch_array($q);
+		$q=mysqli_query($koneksi, "select * from kriteria where id_kriteria='".$h['id_kriteria']."'");
+		if(mysqli_num_rows($q)>0){
+			$h=mysqli_fetch_array($q);
 			$kriteria=$h['nama'];
 		}
 	}
@@ -48,7 +48,7 @@ if($_GET['action']=='edit' and !empty($_GET['id'])){
 if($_GET['action']=='delete' and !empty($_GET['id'])){
 	$id=$_GET['id'];
 	$id2=$_GET['id2'];
-	mysql_query("delete from himpunan where id_himpunan='".$id."'");
+	mysqli_query($koneksi, "delete from himpunan where id_himpunan='".$id."'");
 	exit("<script>location.href='?hal=data_himpunan&kriteria=".$id2."';</script>");
 }
 

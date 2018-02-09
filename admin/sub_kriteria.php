@@ -33,23 +33,20 @@ if(!empty($_POST['cmd_simpan'])){
 		echo "<script>window.alert('Kolom bertanda \'harus diisi\' tidak boleh kosong.');</script>";
 	}else{
 		if($_POST['txt_action']=='new'){
-			if(mysql_num_rows(mysql_query("select * from alternatif where nip='".$_POST['txt_nip']."'"))>0){
+			$sql = mysqli_query($koneksi, "select * from `sub_kriteria` where nip='".$_POST['txt_nip']."'");
+			if(mysqli_num_rows($sql)>0){
 				echo "<script>window.alert('NIP yang anda masukan sudah terdaftar sebelumnya. Silahkan gunakan NIP yang lain.');</script>";
 			}else{
-				$q="insert into alternatif(pendidikan_formasi,pendidikan_teknis,pengalaman_kerja,disiplin,motivasi,etika,kejujuran,sistematis,analisis,kecermatan,tanggap,kerjasama,tanggungjawab,km_kerjasama,km_manajerial,pikiran,keteladanan) values('".$_POST['txt_pf']."','".$_POST['txt_pt']."','".$_POST['txt_pek']."','".$_POST['txt_disiplin']."','".$_POST['txt_motivasi']."','".$_POST['txt_etika']."','".$_POST['txt_kejujuran']."','".$_POST['txt_sistematis']."','".$_POST['txt_analisis']."','".$_POST['txt_kecermatan']."','".$_POST['txt_tanggap']."','".$_POST['txt_kerjasama']."','".$_POST['txt_tanggungjawab']."','".$_POST['txt_km_kerjasama']."','".$_POST['txt_km_manajerial']."','".$_POST['txt_pikiran']."','".$_POST['txt_keteladanan']."')";
-				mysql_query($q);
+				$q="insert into `sub_kriteria`(`pendidikan_formal`, `pendidikan_teknis`, `pengalaman_kerja`, `disiplin`, `motivasi`, `etika`, `kejujuran`, `sistematis`, `analisis`, `kecermatan`, `tanggap`, `kerjasama`, `tanggungjawab`, `km_kerjasama`, `km_manajerial`, `pikiran`, `keteladanan`, `nip`) values('".$_POST['txt_pf']."','".$_POST['txt_pt']."','".$_POST['txt_pek']."','".$_POST['txt_disiplin']."','".$_POST['txt_motivasi']."','".$_POST['txt_etika']."','".$_POST['txt_kejujuran']."','".$_POST['txt_sistematis']."','".$_POST['txt_analisis']."','".$_POST['txt_kecermatan']."','".$_POST['txt_tanggap']."','".$_POST['txt_kerjasama']."','".$_POST['txt_tanggungjawab']."','".$_POST['txt_km_kerjasama']."','".$_POST['txt_km_manajerial']."','".$_POST['txt_pikiran']."','".$_POST['txt_keteladanan']."','" . $_POST['txt_nip'] . "')";
+				mysqli_query($koneksi, $q);
 				exit("<script>location.href='?hal=sub_kriteria';</script>");
 			}
 		}
 		if($_POST['txt_action']=='edit'){
-			$q=mysql_query("select nip from alternatif where id_pegawai='".$_POST['txt_id']."'");
-			$h=mysql_fetch_array($q);
-			$nip_tmp=$h['nip'];
-			if(mysql_num_rows(mysql_query("select * from alternatif where nip='".$_POST['txt_nip']."' and nip<>'".$nip_tmp."'"))>0){
-				echo "<script>window.alert('NIP yang anda masukan sudah terdaftar sebelumnya. Silahkan gunakan NIP yang lain.');</script>";
-			}else{
-				$q="update alternatif set pendidikan_formasi='".$_POST['txt_pf']."','".$_POST['txt_pt']."','".$_POST['txt_pek']."','".$_POST['txt_disiplin']."','".$_POST['txt_motivasi']."','".$_POST['txt_etika']."','".$_POST['txt_kejujuran']."','".$_POST['txt_sistematis']."','".$_POST['txt_analisis']."','".$_POST['txt_kecermatan']."','".$_POST['txt_tanggap']."','".$_POST['txt_kerjasama']."','".$_POST['txt_tanggungjawab']."','".$_POST['txt_km_kerjasama']."','".$_POST['txt_km_manajerial']."','".$_POST['txt_pikiran']."','".$_POST['txt_keteladanan']."'";
-				mysql_query($q);
+			$q=mysqli_query($koneksi, "select nip from `sub_kriteria` where id_pegawai='".$_POST['txt_id']."'");
+			if(mysqli_num_rows($q)>0){
+				$q="update `sub_kriteria` set pendidikan_formasi='".$_POST['txt_pf']."','".$_POST['txt_pt']."','".$_POST['txt_pek']."','".$_POST['txt_disiplin']."','".$_POST['txt_motivasi']."','".$_POST['txt_etika']."','".$_POST['txt_kejujuran']."','".$_POST['txt_sistematis']."','".$_POST['txt_analisis']."','".$_POST['txt_kecermatan']."','".$_POST['txt_tanggap']."','".$_POST['txt_kerjasama']."','".$_POST['txt_tanggungjawab']."','".$_POST['txt_km_kerjasama']."','".$_POST['txt_km_manajerial']."','".$_POST['txt_pikiran']."','".$_POST['txt_keteladanan']."' WHERE nip='" . $_POST['txt_nip'] . "'";
+				mysqli_query($koneksi, $q);
 				exit("<script>location.href='?hal=sub_kriteria';</script>");
 			}
 		}
@@ -57,13 +54,13 @@ if(!empty($_POST['cmd_simpan'])){
 	}
 }
 
-$action=$_GET['action'];
+$action=empty($_GET['action']) ? 'new' : $_GET['action'];
 
-if($_GET['action']=='edit' and !empty($_GET['id'])){
+if($action=='edit' and !empty($_GET['id'])){
 	$id=$_GET['id'];
-	$q=mysql_query("select * from alternatif where id_pegawai='".$id."'");
-	if(mysql_num_rows($q)>0){
-		$h=mysql_fetch_array($q);
+	$q=mysqli_query($koneksi, "select * from alternatif where id_pegawai='".$id."'");
+	if(mysqli_num_rows($q)>0){
+		$h=mysqli_fetch_array($q);
 		
 		$pendidikan_formasi=$h['pendidikan_formasi'];
 		$pendidikan_teknis=$h['pendidikan_teknis'];
@@ -89,9 +86,9 @@ if($_GET['action']=='edit' and !empty($_GET['id'])){
 	}
 }
 
-if($_GET['action']=='delete' and !empty($_GET['id'])){
+if($action=='delete' and !empty($_GET['id'])){
 	$id=$_GET['id'];
-	mysql_query("delete from alternatif where id_pegawai='".$id."'");
+	mysqli_query($koneksi, "delete from alternatif where id_pegawai='".$id."'");
 	exit("<script>location.href='?hal=sub_kriteria';</script>");
 }
 
@@ -109,7 +106,21 @@ if($_GET['action']=='delete' and !empty($_GET['id'])){
         
 		<table width="100%" border="0" cellspacing="4" cellpadding="0" class="tabel_reg">
 		  
-           
+          <tr>
+          	<td width="160">Pilih Karyawan</td>
+          	<td colspan="3">
+          		<select name="txt_nip" style="width: 100%">
+          			<?php
+          			$sql = mysqli_query($koneksi, "SELECT * FROM `alternatif` ");
+          			while ($data = mysqli_fetch_array($sql)) {
+          				echo '<option value="' . $data['nip'] .'">' . $data['nama'] .'</option>';
+          			}
+          			?>
+          			
+          		</select>
+          		<br />
+          	</td>
+          </tr>
           <tr>
 			<td width="160">Nilai Pendidikan Formasi</td>
 			<td><input name="txt_pf" id="pf" type="number" size="40" value="<?php echo $pendidikan_formasi;?>"> <em>harus diisi</em></td>

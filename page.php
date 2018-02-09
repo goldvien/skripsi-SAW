@@ -1,6 +1,6 @@
 <?php
 
-$page=$_GET['hal'];
+$page= isset($_GET['hal']) ? $_GET['hal'] : null;
 switch($page){
 	case 'login':
 		$page="include 'includes/p_login.php';";
@@ -14,7 +14,7 @@ switch($page){
 	case 'data_kriteria':
 		$page="include 'admin/p_kriteria.php';";
 		break;
-		case 'sub_kriteria':
+	case 'sub_kriteria':
 		$page="include 'admin/sub_kriteria.php';";
 		break;
 	case 'update_kriteria':

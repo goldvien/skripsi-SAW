@@ -1,13 +1,14 @@
 <?php
 
-$db->host='localhost';
-$db->user='root';
-$db->password='';
-$db->name='db_saw';
+$db_host = "localhost";
+$db_user = "root";
+$db_pass = "";
+$db_name = "db_saw2";
 
-$wwwexit='./';
+$koneksi = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
+if(mysqli_connect_errno()) {
+	echo "Database Patah Hati" . mysqli_connect_error($koneksi);
+}
 
-$link=mysql_connect($db->host,$db->user,$db->password);
-mysql_select_db($db->name);
 
 ?>

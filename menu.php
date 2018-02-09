@@ -27,8 +27,8 @@ if(empty($_SESSION['LOGIN_username'])){
 
 if(!empty($_POST['cmd_submit'])){
 	unset($_SESSION['ANALISA_KRITERIA']);
-	$q=mysql_query("select * from kriteria");
-	while($h=mysql_fetch_array($q)){
+	$q=mysqli_query($koneksi, "select * from kriteria");
+	while($h=mysqli_fetch_array($q)){
 		$_SESSION['ANALISA_KRITERIA'][$h['id_kriteria']]=$_POST['txt_bobot_'.$h['id_kriteria']];
 	}
 	exit("<script>location.href='?hal=hasil';</script>");
@@ -38,8 +38,9 @@ if(!empty($_POST['cmd_submit'])){
 $bobot[]=array(1,'Sangat Tinggi');
 
 
-$q=mysql_query("select * from kriteria");
-while($h=mysql_fetch_array($q)){
+$q=mysqli_query($koneksi, "select * from kriteria");
+$no=0;
+while($h=mysqli_fetch_array($q)){
 	$no++;
 	$list_bobot='';
 	for($i=0;$i<count($bobot);$i++){

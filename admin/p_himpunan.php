@@ -13,9 +13,9 @@ if(!empty($_POST['cmd_show'])){
 $nav_link='hal=data_himpunan';
 $edit_link='hal=update_himpunan';
 
-$sql=mysql_query("select * from himpunan where id_kriteria='".$id_kriteria."'");
-if(mysql_num_rows($sql) > 0){
-	while($h=mysql_fetch_array($sql)){
+$sql=mysqli_query($koneksi, "select * from himpunan where id_kriteria='".$id_kriteria."'");
+if(mysqli_num_rows($sql) > 0){
+	while($h=mysqli_fetch_array($sql)){
 		$no++;
 		$daftar.='
 		  <tr>
@@ -29,9 +29,9 @@ if(mysql_num_rows($sql) > 0){
 }
 
 $list_kriteria='<option value="">Pilih --</option>';
-$q=mysql_query("select * from kriteria");
-if(mysql_num_rows($q)>0){
-	while($h=mysql_fetch_array($q)){
+$q=mysqli_query($koneksi, "select * from kriteria");
+if(mysqli_num_rows($q)>0){
+	while($h=mysqli_fetch_array($q)){
 		if($id_kriteria==$h['id_kriteria']){$s='selected';}else{$s='';}
 		$list_kriteria.='<option value="'.$h['id_kriteria'].'" '.$s.'>'.$h['nama'].'</option>';
 	}

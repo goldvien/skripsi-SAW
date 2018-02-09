@@ -5,13 +5,13 @@ if(empty($_SESSION['LOGIN_username'])){
 
 if(!empty($_POST['cmd_simpan'])){
 	
-	mysql_query("delete from klasifikasi where id_pegawai='".$_POST['txt_pegawai']."'");
-	$q=mysql_query("select * from kriteria");
-	if(mysql_num_rows($q) > 0){
-		while($h=mysql_fetch_array($q)){
+	mysqli_query($koneksi, "delete from klasifikasi where id_pegawai='".$_POST['txt_pegawai']."'");
+	$q=mysqli_query($koneksi, "select * from kriteria");
+	if(mysqli_num_rows($q) > 0){
+		while($h=mysqli_fetch_array($q)){
 			
 			if(!empty($_POST['himpunan_'.$h['id_kriteria']])){
-				mysql_query("insert into klasifikasi(id_pegawai,id_himpunan) values('".$_POST['txt_pegawai']."','".$_POST['himpunan_'.$h['id_kriteria']]."')");
+				mysqli_query($koneksi, "insert into klasifikasi(id_pegawai,id_himpunan) values('".$_POST['txt_pegawai']."','".$_POST['himpunan_'.$h['id_kriteria']]."')");
 			}
 		}
 	}	
@@ -19,21 +19,23 @@ if(!empty($_POST['cmd_simpan'])){
 	echo "<script>alert('Data berhasil tersimpan');location.href='?hal=data_klasifikasi';</script>";
 }
 
-$q=mysql_query("select * from alternatif order by nama");
-if(mysql_num_rows($q) > 0){
-	while($h=mysql_fetch_array($q)){
+$q=mysqli_query($koneksi, "select * from alternatif order by nama");
+$daftar = "";
+$js = "";
+if(mysqli_num_rows($q) > 0){
+	while($h=mysqli_fetch_array($q)){
 		$daftar_kriteria='';
 		$n=0;
 		
-		$qq=mysql_query("select * from kriteria");
-		if(mysql_num_rows($qq) > 0){
-			while($hh=mysql_fetch_array($qq)){
+		$qq=mysqli_query($koneksi, "select * from kriteria");
+		if(mysqli_num_rows($qq) > 0){
+			while($hh=mysqli_fetch_array($qq)){
 				
 				$list_kriteria='<option value=""></option>';
-				$qqq=mysql_query("select * from himpunan where id_kriteria='".$hh['id_kriteria']."'");
-				if(mysql_num_rows($qqq) > 0){
-					while($hhh=mysql_fetch_array($qqq)){
-						if(mysql_num_rows(mysql_query("select * from klasifikasi where id_pegawai='".$h['id_pegawai']."' and id_himpunan='".$hhh['id_himpunan']."'"))>0){
+				$qqq=mysqli_query($koneksi, "select * from himpunan where id_kriteria='".$hh['id_kriteria']."'");
+				if(mysqli_num_rows($qqq) > 0){
+					while($hhh=mysqli_fetch_array($qqq)){
+						if(mysqli_num_rows(mysqli_query($koneksi, "select * from klasifikasi where id_pegawai='".$h['id_pegawai']."' and id_himpunan='".$hhh['id_himpunan']."'"))>0){
 							
 							$s='selected';
 						}else{

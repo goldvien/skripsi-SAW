@@ -1,9 +1,4 @@
-<?php
-
-
-?>
- 		
-		<?php echo $str->pesan;?>
+<?php //echo $str->pesan;?>
 		
         <div style="font-family:Arial;font-size:12px;padding:3px ">
 		<?php

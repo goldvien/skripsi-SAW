@@ -12,31 +12,33 @@ if(!empty($_POST['cmd_simpan'])){
 	}else{
 		if($_POST['txt_action']=='new'){
 			$q="insert into kriteria(nama,atribut) values('".$_POST['txt_nama']."','".$_POST['txt_atribut']."')";
-			mysql_query($q);
+			mysqli_query($koneksi, $q);
 		}
 		if($_POST['txt_action']=='edit'){
 			$q="update kriteria set nama='".$_POST['txt_nama']."',atribut='".$_POST['txt_atribut']."' where id_kriteria='".$_POST['txt_id']."'";
-			mysql_query($q);
+			mysqli_query($koneksi, $q);
 		}
 		exit("<script>location.href='?hal=data_kriteria';</script>");
 	}
 }
 
-$action=$_GET['action'];
+$action=empty($_GET['action']) ? null : $_GET['action'];
+$id=empty($_GET['id']) ? null : $_GET['id'];
 
-if($_GET['action']=='edit' and !empty($_GET['id'])){
+if($action=='edit' and !empty($_GET['id'])){
 	$id=$_GET['id'];
-	$q=mysql_query("select * from kriteria where id_kriteria='".$id."'");
-	if(mysql_num_rows($q)>0){
-		$h=mysql_fetch_array($q);
+	$q=mysqli_query($koneksi, "select * from kriteria where id_kriteria='".$id."'");
+	if(mysqli_num_rows($q)>0){
+		$h=mysqli_fetch_array($q);
 		$nama=$h['nama'];
-		$atribut=$h['atribut'];
+		$atribut=$h['nilai'];
 	}
 }
-
-if($_GET['action']=='delete' and !empty($_GET['id'])){
+$nama=empty($nama) ? null : $nama;
+$atribut=empty($atribut) ? null : $atribut;
+if($action=='delete' and !empty($_GET['id'])){
 	$id=$_GET['id'];
-	mysql_query("delete from kriteria where id_kriteria='".$id."'");
+	mysqli_query($koneksi, "delete from kriteria where id_kriteria='".$id."'");
 	exit("<script>location.href='?hal=data_kriteria';</script>");
 }
 

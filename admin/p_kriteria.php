@@ -7,9 +7,10 @@ if(empty($_SESSION['LOGIN_username'])){
 $nav_link='hal=data_kriteria';
 $edit_link='hal=update_kriteria';
 $no=0;
-$q=mysql_query("select * from kriteria");
-if(mysql_num_rows($q) > 0){
-	while($h=mysql_fetch_array($q)){
+$q=mysqli_query($koneksi, "select * from kriteria");
+$daftar = "";
+if(mysqli_num_rows($q) > 0){
+	while($h=mysqli_fetch_array($q)){
 		
 		$no++;
 		$daftar.='

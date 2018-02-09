@@ -11,22 +11,23 @@ if(!empty($_POST['cmd_new'])){
 	exit("<script>location.href='?hal=analisa';</script>");
 }
 
-$jumlah_kriteria=mysql_num_rows(mysql_query("select * from kriteria"));
+$jumlah_kriteria=mysqli_num_rows(mysqli_query($koneksi, "select * from kriteria"));
 
-$jumlah_alternatif=mysql_num_rows(mysql_query("select * from alternatif"));
+$jumlah_alternatif=mysqli_num_rows(mysqli_query($koneksi, "select * from alternatif"));
 
 
-$q=mysql_query("select * from alternatif order by nama");
-while($h=mysql_fetch_array($q)){
+$q=mysqli_query($koneksi, "select * from alternatif order by nama");
+$title = "";
+while($h=mysqli_fetch_array($q)){
 	$alternatif[]=array($h['id_pegawai'],$h['nip'],$h['nama']);
 	$title.='<td align="center" width="240">'.strtoupper($h['nama']).'</td>';
 }
 
 # baca data kriteria dan nilai bobot dari form input analisa
-$q=mysql_query("select * from kriteria");
-while($h=mysql_fetch_array($q)){
+$q=mysqli_query($koneksi, "select * from kriteria");
+while($h=mysqli_fetch_array($q)){
 	$nilai=$_SESSION['ANALISA_KRITERIA'][$h['id_kriteria']];
-	$kriteria[]=array($h['id_kriteria'],$h['nama'],$h['atribut'],$nilai);
+	$kriteria[]=array($h['id_kriteria'],$h['nama'],$h['nilai'],$nilai);
 }
 
 $no=0;
@@ -39,8 +40,8 @@ for($i=0;$i<count($alternatif);$i++){
 	$no++;
 	$daftar.='<tr><td>'.$no.'</td><td>'.$alternatif[$i][1].'</td><td>'.$alternatif[$i][2].'</td>';
 	for($ii=0;$ii<count($kriteria);$ii++){
-		$q=mysql_query("select himpunan.nama from klasifikasi inner join himpunan on klasifikasi.id_himpunan=himpunan.id_himpunan where klasifikasi.id_pegawai='".$alternatif[$i][0]."' and himpunan.id_kriteria='".$kriteria[$ii][0]."'");
-		$h=mysql_fetch_array($q);
+		$q=mysqli_query($koneksi, "select himpunan.nama from klasifikasi inner join himpunan on klasifikasi.id_himpunan=himpunan.id_himpunan where klasifikasi.id_pegawai='".$alternatif[$i][0]."' and himpunan.id_kriteria='".$kriteria[$ii][0]."'");
+		$h=mysqli_fetch_array($q);
 		$himpunan=$h['nama'];
 		$daftar.='<td>'.$himpunan.'</td>';
 	}
@@ -57,8 +58,8 @@ for($i=0;$i<count($alternatif);$i++){
 	$no++;
 	$daftar_1.='<tr><td>'.$no.'</td><td>'.$alternatif[$i][1].'</td><td>'.$alternatif[$i][2].'</td>';
 	for($ii=0;$ii<count($kriteria);$ii++){
-		$q=mysql_query("select himpunan.nilai from klasifikasi inner join himpunan on klasifikasi.id_himpunan=himpunan.id_himpunan where klasifikasi.id_pegawai='".$alternatif[$i][0]."' and himpunan.id_kriteria='".$kriteria[$ii][0]."'");
-		$h=mysql_fetch_array($q);
+		$q=mysqli_query($koneksi, "select himpunan.nilai from klasifikasi inner join himpunan on klasifikasi.id_himpunan=himpunan.id_himpunan where klasifikasi.id_pegawai='".$alternatif[$i][0]."' and himpunan.id_kriteria='".$kriteria[$ii][0]."'");
+		$h=mysqli_fetch_array($q);
 		$nilai=$h['nilai'];
 		
 		$matriks_x[$i+1][$ii+1]=$nilai;
@@ -77,14 +78,18 @@ for($i=0;$i<count($alternatif);$i++){
 	$no++;
 	$daftar_2.='<tr><td>'.$no.'</td><td>'.$alternatif[$i][1].'</td><td>'.$alternatif[$i][2].'</td>';
 	for($ii=0;$ii<count($kriteria);$ii++){
-		$arr='';
+		$arr=array();
 		for($j=0;$j<count($alternatif);$j++){ 
 			$arr[]=$matriks_x[$j+1][$ii+1];
 		}
 		if($kriteria[$ii][2]=='benefit'){
 			if($matriks_x[$i+1][$ii+1]>0){$jml=$matriks_x[$i+1][$ii+1]/max($arr);}else{$jml=0;}
 		}else{
-			if(min($arr)>0){$jml=min($arr)/$matriks_x[$i+1][$ii+1];}else{$jml=0;}
+			if(min($arr)>0){
+				$jml=min($arr)/$matriks_x[$i+1][$ii+1];
+			} else{
+				$jml=0;
+			}
 		}
 		$matriks_1[$i+1][$ii+1]=round($jml,3);
 		$daftar_2.='<td>'.round($jml,3).'</td>';
@@ -106,8 +111,8 @@ for($i=count($hasil)-1;$i>=0;$i--){
 	$rank=count($hasil)-$i;
 	$hasil_akhir[$hasil[$i][1]]=array($hasil[$i][0],$rank);
 	if(empty($best_alternatif)){
-		$q=mysql_query("select * from alternatif where id_pegawai='".$hasil[$i][1]."'");
-		$h=mysql_fetch_array($q);
+		$q=mysqli_query($koneksi, "select * from alternatif where id_pegawai='".$hasil[$i][1]."'");
+		$h=mysqli_fetch_array($q);
 		$nama=$h['nama'];
 		$best_alternatif=$nama;
 	}

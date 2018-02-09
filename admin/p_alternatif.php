@@ -8,9 +8,10 @@ $nav_link='hal=data_alternatif';
 $edit_link='hal=update_alternatif';
 
 $q="select * from alternatif order by nama";
-$sql=mysql_query($q);
-if(mysql_num_rows($sql) > 0){
-	while($h=mysql_fetch_array($sql)){
+$sql=mysqli_query($koneksi, $q);
+$daftar = "";
+if(mysqli_num_rows($sql) > 0){
+	while($h=mysqli_fetch_array($sql)){
 		$no++;
 		$daftar.='
 		  <tr>
